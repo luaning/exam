@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>English Skills Quiz – Interactive</title>
+   <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>English Skills Quiz – Interactive</h1>
+      <div class="controls">
+        <button class="btn" id="gradeBtn">Check Answers</button>
+        <button class="btn secondary" id="revealBtn">Reveal All Correct Answers</button>
+        <button class="btn ghost" id="clearBtn">Reset</button>
+        <span id="overall" class="pill">Score: <strong id="score">0/0</strong></span>
+        <span class="pill" title="Auto-saves your answers">Auto‑saved ✓</span>
+      </div>
+      <div class="scorebar"><div id="scorebarFill" style="width:0%"></div></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="lessons" class="grid"></div>
+  </main>
+
+  <footer>
+    Built for quick practice. Text answers accept close variants (case‑insensitive). Subjective items earn credit if a justification is provided.
+  </footer>
+<script src="script.js"></script>
+</body>
+</html>
