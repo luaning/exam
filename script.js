@@ -1,0 +1,254 @@
+  // Utility: normalize text for comparison
+  const norm = s => (s||"")
+    .toLowerCase()
+    .replace(/[–—-]/g,"-")
+    .replace(/[^a-z0-9\-\s()]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+
+  // Question bank
+  // type: 'text' | 'tf'
+  // rule: exactAny, containsAny(min), containsAll, keywords(min), nonEmpty
+  const data = [
+    {
+      lesson:"Lesson 1 – Types of Context Clues & Word Parts",
+      questions:[
+        {id:"l1q1", prompt:"What type of context clue is used when the author provides examples like such as or for instance?", type:"text", rule:{exactAny:["example clues","example clue","examples","example"]}, key:"Example clues"},
+        {id:"l1q2", prompt:"Which type of clue uses a similar word to clarify the meaning of an unfamiliar word?", type:"text", rule:{containsAny:{list:["synonym","definition"], min:1}}, key:"Synonym/Definition clues"},
+        {id:"l1q3", prompt:"True or False: Antonym/contrast clues use words like but and however.", type:"tf", rule:{exactAny:["true","t"]}, key:"True"},
+        {id:"l1q4", prompt:"Which type of context clue requires relying on your own common sense?", type:"text", rule:{containsAny:{list:["general","inference","common sense"], min:1}}, key:"General clues"},
+        {id:"l1q5", prompt:"Give one signal word that introduces synonym clues.", type:"text", rule:{containsAny:{list:["in other words","that is","or"], min:1}}, key:'Examples: "in other words", "that is", "or"'},
+        {id:"l1q6", prompt:"What does the prefix “pre-” mean?", type:"text", rule:{exactAny:["before"]}, key:"Before"},
+        {id:"l1q7", prompt:"Identify the type of prefix in the word submarine.", type:"text", rule:{containsAny:{list:["location"], min:1}}, key:"Location prefix"},
+        {id:"l1q8", prompt:"What is the role of suffixes in words?", type:"text", rule:{containsAny:{list:["change","part of speech","form","meaning"], min:1}}, key:"Changes a word’s form/part of speech"},
+        {id:"l1q9", prompt:"Name one suffix that forms an adjective.", type:"text", rule:{exactAny:["-ful","ful","-ous","ous","-y","y","-al","al"]}, key:"-ful, -ous, -y, -al (any)"},
+        {id:"l1q10", prompt:"Differentiate denotation and connotation.", type:"text", rule:{keywords:{list:["denotation","literal"], min:2, also:["connotation","implied"]}}, key:"Denotation = literal; Connotation = implied"},
+      ]
+    },
+    {
+      lesson:"Lesson 2 – Author’s Purpose & Intended Audience",
+      questions:[
+        {id:"l2q1", prompt:"What is the main goal when the author writes to persuade?", type:"text", rule:{containsAny:{list:["convince","influence"], min:1}}, key:"To convince the reader"},
+        {id:"l2q2", prompt:"If the text provides reliable facts, what is the author’s purpose?", type:"text", rule:{exactAny:["inform","to inform","informative"]}, key:"Inform"},
+        {id:"l2q3", prompt:"Creative writing that engages emotions belongs to what purpose?", type:"text", rule:{exactAny:["express","to express","expressive"]}, key:"Express"},
+        {id:"l2q4", prompt:"List two factors that help determine the intended audience.", type:"text", rule:{keywords:{list:["vocabulary","sentence length","topic","representation"], min:2}}, key:"Vocabulary, sentence length, topic, representation (any 2)"},
+        {id:"l2q5", prompt:"True or False: Boys are expected to stay quiet while girls are expected to be strong and not cry.", type:"tf", rule:{exactAny:["false","f"]}, key:"False"},
+        {id:"l2q6", prompt:"What is true bravery according to the lesson?", type:"text", rule:{containsAny:{list:["truth","standing up","stand up","trying","hard"], min:1}}, key:"Telling the truth; standing up for others; trying even if it’s hard"},
+        {id:"l2q7", prompt:"In terms of age, what is one misconception about people in their twenties?", type:"text", rule:{containsAny:{list:["figured out","everything figured out","have everything"], min:1}}, key:"That they must have everything figured out"},
+        {id:"l2q8", prompt:"Wrinkles and gray hair are often seen as signs of aging, but what do they actually represent?", type:"text", rule:{containsAny:{list:["experience","stories","resilience","love"], min:1}}, key:"Life stories, resilience, love, experience"},
+        {id:"l2q9", prompt:"Why is it wrong to judge people by their status symbols like clothes or money?", type:"text", rule:{containsAny:{list:["value","words","choices","kindness","not judge"], min:1}}, key:"Because true value is in words, choices, and kindness"},
+        {id:"l2q10", prompt:"What lasting impact do professionals like teachers often leave on others?", type:"text", rule:{containsAny:{list:["meaningful","moments","courage","kindness","smiles","growth"], min:1}}, key:"Meaningful small moments (courage, kindness, smiles, growth)"},
+      ]
+    },
+    {
+      lesson:"Lesson 3 – Author’s Tone and Point of View",
+      questions:[
+        {id:"l3q1", prompt:"Define “tone” in writing.", type:"text", rule:{containsAny:{list:["attitude","author","topic"], min:2}}, key:"Author’s attitude toward the topic"},
+        {id:"l3q2", prompt:"What does “mood” refer to?", type:"text", rule:{containsAny:{list:["reader","feelings","emotion"], min:2}}, key:"Reader’s feelings"},
+        {id:"l3q3", prompt:"Identify one word that shows a positive tone.", type:"text", rule:{containsAny:{list:["appreciative","admiring","joyful","cheerful","calm","relaxed","hopeful"], min:1}}, key:"Any positive word e.g., appreciative/joyful/calm/hopeful"},
+        {id:"l3q4", prompt:"Which tone is expressed by the words harsh or bitter?", type:"text", rule:{containsAny:{list:["negative","angry","bitter","harsh"], min:1}}, key:"Negative tone"},
+        {id:"l3q5", prompt:"True or False: Informing readers is considered a neutral tone.", type:"tf", rule:{exactAny:["true","t"]}, key:"True"},
+        {id:"l3q6", prompt:"What is one way an author’s personal experience can influence their point of view?", type:"text", rule:{containsAny:{list:["beliefs","past experiences","bias","perspective"], min:1}}, key:"Personal beliefs and past experiences shape POV"},
+        {id:"l3q7", prompt:"How does cultural exposure affect point of view?", type:"text", rule:{containsAny:{list:["traditions","culture","values","shaped"], min:1}}, key:"POV is shaped by traditions and culture"},
+        {id:"l3q8", prompt:"What makes a fact different from an opinion?", type:"text", rule:{containsAll:["evidence","belief"]}, key:"Fact = supported by evidence; Opinion = personal belief"},
+        {id:"l3q9", prompt:"Is the statement “Pineapple is the best fruit” fact or opinion? Explain.", type:"text", rule:{containsAny:{list:["opinion","no evidence","preference","subjective"], min:1}}, key:"Opinion (preference; no evidence can prove it)"},
+        {id:"l3q10", prompt:"What should readers pay attention to in order to identify tone?", type:"text", rule:{containsAny:{list:["choice of words","style","diction","language"], min:1}}, key:"Choice of words and style"},
+      ]
+    },
+    {
+      lesson:"Lesson 5 – Logical Fallacies",
+      questions:[
+        {id:"l5q1", prompt:"What type of reasoning goes from general to specific?", type:"text", rule:{containsAny:{list:["deductive","deduction"], min:1}}, key:"Deductive reasoning"},
+        {id:"l5q2", prompt:"“I am sick, my classmate is sick, therefore there’s an outbreak.” This is what type of reasoning?", type:"text", rule:{containsAny:{list:["inductive","induction"], min:1}}, key:"Inductive reasoning"},
+        {id:"l5q3", prompt:"Define fallacy.", type:"text", rule:{containsAny:{list:["error","flaw","reasoning","unreliable"], min:2}}, key:"An error in reasoning that makes an argument unreliable"},
+        {id:"l5q4", prompt:"Which fallacy is based on popularity rather than facts?", type:"text", rule:{containsAny:{list:["bandwagon","appeal to popularity"], min:1}}, key:"Bandwagon"},
+        {id:"l5q5", prompt:"“I met one rude person from that city, therefore all are rude.” This is what fallacy?", type:"text", rule:{containsAny:{list:["hasty generalization","overgeneralization"], min:1}}, key:"Hasty generalization"},
+        {id:"l5q6", prompt:"What fallacy distracts by bringing up irrelevant issues?", type:"text", rule:{containsAny:{list:["red herring"], min:1}}, key:"Red herring"},
+        {id:"l5q7", prompt:"What fallacy attacks the person instead of the issue?", type:"text", rule:{containsAny:{list:["ad hominem"], min:1}}, key:"Ad hominem"},
+        {id:"l5q8", prompt:"True or False: Either-or reasoning gives only two choices when more exist.", type:"tf", rule:{exactAny:["true","t"]}, key:"True"},
+        {id:"l5q9", prompt:"Which fallacy assumes one action will lead to a chain of bad outcomes without proof?", type:"text", rule:{containsAny:{list:["slippery slope"], min:1}}, key:"Slippery slope"},
+        {id:"l5q10", prompt:"When evaluating an author’s argument, why is it important to know the publisher or sponsor?", type:"text", rule:{containsAny:{list:["reliable","bias","trust","credibility","unbiased"], min:1}}, key:"To ensure the information is reliable and unbiased"},
+      ]
+    },
+    {
+      lesson:"Lesson 7 – Journal Articles",
+      questions:[
+        {id:"l7q1", prompt:"What is the first thing to identify when reading an academic text?", type:"text", rule:{containsAny:{list:["topic","subject"], min:1}}, key:"The topic"},
+        {id:"l7q2", prompt:"Define explicit main idea.", type:"text", rule:{containsAny:{list:["directly","stated","clear"], min:2}}, key:"Directly stated main idea"},
+        {id:"l7q3", prompt:"Define implicit main idea.", type:"text", rule:{containsAny:{list:["implied","inference","infer"], min:1}}, key:"Implied main idea (requires inference)"},
+        {id:"l7q4", prompt:"True or False: Supporting details are usually more specific than the main idea.", type:"tf", rule:{exactAny:["true","t"]}, key:"True"},
+        {id:"l7q5", prompt:"Give one strategy to find the main idea in implicit texts.", type:"text", rule:{containsAny:{list:["summarizing","combine","one sentence","paraphrase"], min:1}}, key:"By summarizing sentences into one idea"},
+        {id:"l7q6", prompt:"In journal articles, what part usually introduces the topic?", type:"text", rule:{containsAny:{list:["introduction","abstract"], min:1}}, key:"Introduction or abstract"},
+        {id:"l7q7", prompt:"Why is it important to identify supporting details?", type:"text", rule:{containsAny:{list:["support","explain","evidence","main idea"], min:2}}, key:"They support and explain the main idea"},
+        {id:"l7q8", prompt:"Write one difference between explicit and implicit main ideas.", type:"text", rule:{containsAny:{list:["explicit","implicit","stated","implied"], min:3}}, key:"Explicit = directly stated; Implicit = implied"},
+        {id:"l7q9", prompt:"If you combine sentences into one summary, are you finding explicit or implicit main idea?", type:"text", rule:{containsAny:{list:["implicit"], min:1}}, key:"Implicit"},
+        {id:"l7q10", prompt:"What makes journal articles different from ordinary texts?", type:"text", rule:{containsAny:{list:["academic","research","structured","peer"], min:1}}, key:"Academic, research-based, structured format"},
+      ]
+    },
+    {
+      lesson:"Lesson 8 – Critical Reading",
+      questions:[
+        {id:"l8q1", prompt:"Define critical reading.", type:"text", rule:{containsAny:{list:["judging","evaluate","processing","carefully"], min:1}}, key:"Judging and processing an author’s ideas carefully"},
+        {id:"l8q2", prompt:"What is annotating?", type:"text", rule:{containsAny:{list:["highlight","notes","margin","comment"], min:1}}, key:"Highlighting and adding notes"},
+        {id:"l8q3", prompt:"What is outlining?", type:"text", rule:{containsAny:{list:["organizing","structure","main points"], min:1}}, key:"Organizing ideas in a structured format"},
+        {id:"l8q4", prompt:"True or False: Summarizing means copying the text word for word.", type:"tf", rule:{exactAny:["false","f"]}, key:"False"},
+        {id:"l8q5", prompt:"Which skill involves breaking down a text into smaller parts?", type:"text", rule:{containsAny:{list:["analyzing","analysis"], min:1}}, key:"Analyzing"},
+        {id:"l8q6", prompt:"Which skill requires highlighting important parts of the text?", type:"text", rule:{containsAny:{list:["annotating","annotation"], min:1}}, key:"Annotating"},
+        {id:"l8q7", prompt:"What is the main goal of summarizing?", type:"text", rule:{containsAny:{list:["shorten","own words","condense","main idea"], min:1}}, key:"To shorten a text in your own words"},
+        {id:"l8q8", prompt:"Why is outlining useful in academic reading?", type:"text", rule:{containsAny:{list:["organize","clear","structure"], min:1}}, key:"Helps organize information clearly"},
+        {id:"l8q9", prompt:"Give one benefit of analyzing a text.", type:"text", rule:{containsAny:{list:["deeper","understanding","meaning","elements","insight"], min:1}}, key:"Deeper understanding of meaning and elements"},
+        {id:"l8q10", prompt:"Which of the four skills do you find most useful? Why?", type:"text", rule:{nonEmpty:true}, key:"Any answer with justification"},
+      ]
+    },
+    {
+      lesson:"Lesson 9 – Citation of Sources",
+      questions:[
+        {id:"l9q1", prompt:"What is plagiarism?", type:"text", rule:{containsAny:{list:["using","work","ideas","without","credit"], min:3}}, key:"Using someone else’s work/ideas without credit"},
+        {id:"l9q2", prompt:"Define mosaic plagiarism.", type:"text", rule:{containsAny:{list:["mixing","copied","different sources","patchwork"], min:1}}, key:"Mixing copied ideas from different sources"},
+        {id:"l9q3", prompt:"Forgetting to cite a source is called what type of plagiarism?", type:"text", rule:{containsAny:{list:["accidental","unintentional"], min:1}}, key:"Accidental plagiarism"},
+        {id:"l9q4", prompt:"True or False: Self-plagiarism is acceptable in academic writing.", type:"tf", rule:{exactAny:["false","f"]}, key:"False"},
+        {id:"l9q5", prompt:"What does it mean to cite a source?", type:"text", rule:{containsAny:{list:["give credit","acknowledge","reference"], min:1}}, key:"Giving credit to the original author"},
+        {id:"l9q6", prompt:"Which style is used in social sciences?", type:"text", rule:{exactAny:["apa"]}, key:"APA"},
+        {id:"l9q7", prompt:"Which style is used in arts and humanities?", type:"text", rule:{exactAny:["mla"]}, key:"MLA"},
+        {id:"l9q8", prompt:"Give one format of in-text citation under APA.", type:"text", rule:{containsAny:{list:["(",")","author","year","page"], min:3}}, key:"(Author, year, page)"},
+        {id:"l9q9", prompt:"Write the MLA format for in-text citation.", type:"text", rule:{containsAny:{list:["author","page"], min:2}}, key:"(Author page)"},
+        {id:"l9q10", prompt:"Why is it important to include a bibliography?", type:"text", rule:{containsAny:{list:["credit","avoid","plagiarism","verify","sources"], min:2}}, key:"To give credit, avoid plagiarism, and let readers verify sources"},
+      ]
+    },
+    {
+      lesson:"Lesson 10 – Workplace Reading & Job Applications",
+      questions:[
+        {id:"l10q1", prompt:"Name three pieces of information usually found in a job advertisement.", type:"text", rule:{keywords:{list:["job description","company","location","requirements","salary","qualifications"], min:3}}, key:"Job description, company name, location, requirements (any 3)"},
+        {id:"l10q2", prompt:"What is the first step in the job application process?", type:"text", rule:{containsAny:{list:["job advertisement","find a job","search posting","reading job ad"], min:1}}, key:"Job advertisement"},
+        {id:"l10q3", prompt:"True or False: A phone interview usually happens before the face-to-face interview.", type:"tf", rule:{exactAny:["true","t"]}, key:"True"},
+        {id:"l10q4", prompt:"What is the purpose of a cover letter?", type:"text", rule:{containsAny:{list:["introduce","intent","apply","position"], min:2}}, key:"To introduce yourself and state your intent to apply"},
+        {id:"l10q5", prompt:"How many paragraphs should a cover letter typically have?", type:"text", rule:{exactAny:["3","three"]}, key:"Three paragraphs"},
+        {id:"l10q6", prompt:"What should a resume mainly highlight?", type:"text", rule:{containsAny:{list:["credentials","education","experience","relevant"], min:2}}, key:"Credentials, education, relevant experience"},
+        {id:"l10q7", prompt:"Name one example of a portfolio item.", type:"text", rule:{containsAny:{list:["photos","samples","certificates","achievements","projects","artwork"], min:1}}, key:"Photos, samples, certificates, achievements (any)"},
+        {id:"l10q8", prompt:"In a job interview, how should you answer the question “Tell me about yourself?”", type:"text", rule:{containsAny:{list:["education","achievements","experience","relevant"], min:2}}, key:"By stating education, achievements, and relevant experience"},
+        {id:"l10q9", prompt:"Why should you research the company before the interview?", type:"text", rule:{containsAny:{list:["good impression","informed","genuine interest","fit"], min:1}}, key:"To give a good, informed impression and show genuine interest"},
+        {id:"l10q10", prompt:"What is the purpose of contract signing in the hiring process?", type:"text", rule:{containsAny:{list:["finalize","agreement","employer","applicant"], min:2}}, key:"To finalize the agreement between applicant and employer"},
+      ]
+    },
+  ];
+
+  // Render
+  const container = document.getElementById('lessons');
+  const makeTF = (id)=>`<div class="tf">
+      <label><input type="radio" name="${id}" value="true"> True</label>
+      <label><input type="radio" name="${id}" value="false"> False</label>
+    </div>`;
+
+  const saved = JSON.parse(localStorage.getItem('quizAnswers')||'{}');
+
+  data.forEach(({lesson, questions})=>{
+    const sec = document.createElement('section');
+    sec.className='lesson';
+    const secId = lesson.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    sec.id=secId;
+    sec.innerHTML = `<h2>${lesson}</h2>` + questions.map((q, i)=>{
+      const num = i+1; const savedVal = saved[q.id] ?? '';
+      const input = q.type==='tf'
+        ? makeTF(q.id)
+        : `<input type="text" id="${q.id}" placeholder="Type your answer" value="${savedVal?.text??savedVal??''}">`;
+      return `<div class="q" data-id="${q.id}">
+        <p><span class="badge">Q${num}</span> ${q.prompt}</p>
+        ${input}
+        <div class="res" id="${q.id}-res"></div>
+        <details id="${q.id}-details"><summary>Show correct answer</summary><div class="key"></div></details>
+      </div>`;
+    }).join('');
+    container.appendChild(sec);
+  });
+
+  // Load TF saved
+  for(const [k,v] of Object.entries(saved)){
+    const el = document.querySelector(`[name="${k}"][value="${v}"]`);
+    if(el) el.checked = true;
+  }
+
+  // Fill answer keys
+  data.forEach(({questions})=>questions.forEach(q=>{
+    const det = document.getElementById(`${q.id}-details`).querySelector('.key');
+    det.textContent = q.key;
+  }));
+
+  // Save on input
+  document.addEventListener('input', e=>{
+    const t = e.target; if(!t) return;
+    if(t.matches('[type="text"]')){
+      saved[t.id] = {text:t.value};
+    } else if(t.matches('[type="radio"]')){
+      saved[t.name] = t.value;
+    }
+    localStorage.setItem('quizAnswers', JSON.stringify(saved));
+  });
+
+  // Grading logic
+  function checkRule(ans, rule){
+    const a = norm(ans);
+    if(rule.nonEmpty){ return a.length>0; }
+    if(rule.exactAny){ return rule.exactAny.map(norm).includes(a); }
+    if(rule.containsAll){
+      return rule.containsAll.every(k=>a.includes(norm(k)));
+    }
+    if(rule.containsAny){
+      const {list, min=1} = rule.containsAny;
+      let hit=0; list.forEach(k=>{ if(a.includes(norm(k))) hit++; });
+      return hit>=min;
+    }
+    if(rule.keywords){
+      const {list, min=1} = rule.keywords;
+      let hit=0; list.forEach(k=>{ if(a.includes(norm(k))) hit++; });
+      return hit>=min;
+    }
+    if(rule.keywords && rule.keywords.also){
+      const {also} = rule.keywords;
+      let hit=0; also.forEach(k=>{ if(a.includes(norm(k))) hit++; });
+      return hit>0; // fallback
+    }
+    return false;
+  }
+
+  function grade(){
+    let total=0, correct=0; const perLesson = {};
+    data.forEach(({lesson, questions})=>{
+      perLesson[lesson] = {total:questions.length, correct:0};
+      questions.forEach(q=>{
+        total++;
+        let ans="";
+        if(q.type==='tf'){
+          const sel = document.querySelector(`[name="${q.id}"]:checked`);
+          ans = sel ? sel.value : "";
+        } else {
+          const el = document.getElementById(q.id); ans = el ? el.value : "";
+        }
+        const ok = checkRule(ans, q.rule);
+        const res = document.getElementById(`${q.id}-res`);
+        res.textContent = ok ? '✓ Correct' : '✗ Incorrect';
+        res.className = 'res ' + (ok? 'correct':'incorrect');
+        if(ok){ correct++; perLesson[lesson].correct++; }
+      });
+    });
+    document.getElementById('score').textContent = `${correct}/${total}`;
+    const pct = total? Math.round((correct/total)*100):0;
+    document.getElementById('scorebarFill').style.width = pct+'%';
+
+    // Show per-lesson mini report below each title
+    data.forEach(({lesson})=>{
+      const sec = document.getElementById(lesson.toLowerCase().replace(/[^a-z0-9]+/g,'-'));
+      let badge = sec.querySelector('.lesson-score');
+      if(!badge){ badge = document.createElement('div'); badge.className='pill lesson-score'; sec.querySelector('h2').after(badge); }
+      const x = perLesson[lesson];
+      badge.textContent = `Lesson score: ${x.correct}/${x.total}`;
+    });
+  }
+
+  document.getElementById('gradeBtn').addEventListener('click', grade);
+  document.getElementById('revealBtn').addEventListener('click', ()=>{
+    document.querySelectorAll('details').forEach(d=>d.open=true);
+  });
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    localStorage.removeItem('quizAnswers');
+    location.reload();
+  });
